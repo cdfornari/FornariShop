@@ -9,7 +9,9 @@ export interface iProduct {
     tags: string[];
     title: string;
     type: iType;
-    gender: 'men'|'women'|'kid'|'unisex'
+    gender: 'men'|'women'|'kid'|'unisex',
+    createdAt: string;
+    updatedAt: string;
 }
 
 export type iSize = 'XS'|'S'|'M'|'L'|'XL'|'XXL'|'XXXL';
