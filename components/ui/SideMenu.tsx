@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Box, Divider, Drawer, IconButton, Input, InputAdornment, List, ListItem, ListItemIcon, ListItemText, ListSubheader } from "@mui/material"
 import { AccountCircleOutlined, AdminPanelSettings, CategoryOutlined, ConfirmationNumberOutlined, EscalatorWarningOutlined, FemaleOutlined, LoginOutlined, MaleOutlined, SearchOutlined, VpnKeyOutlined } from "@mui/icons-material"
@@ -8,11 +8,16 @@ import { ThemeSwitcher } from './ThemeSwitcher';
 
 export const SideMenu = () => {
     const {push} = useRouter();
+    const {isMenuOpen,toggleMenu} = useContext(UIContext);
+    const [searchQuery,setSearchQuery] = useState('');
     const navigateTo = (path: string) => {
         toggleMenu();
         push(path);
     }
-    const {isMenuOpen,toggleMenu} = useContext(UIContext);
+    const onSearch = () => {
+        if(searchQuery.trim().length === 0) return;
+        navigateTo(`/search/${searchQuery}`);
+    }
     return (
         <Drawer
             open={ isMenuOpen }
@@ -26,12 +31,17 @@ export const SideMenu = () => {
 
                     <ListItem>
                         <Input
+                            autoFocus
                             type='text'
                             placeholder="Search..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onKeyPress={(e)=> e.key === 'Enter' && onSearch()}
                             endAdornment={
                                 <InputAdornment position="end">
                                     <IconButton
-                                    aria-label="toggle password visibility"
+                                        aria-label="toggle password visibility"
+                                        onClick={onSearch}
                                     >
                                     <SearchOutlined />
                                     </IconButton>

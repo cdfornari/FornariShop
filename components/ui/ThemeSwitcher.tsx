@@ -12,42 +12,36 @@ export const ThemeSwitcher: FC<Props> = ({showSmall = false, showMedium = false}
     const {palette} = useTheme();
     return (
         <ButtonGroup 
+            className='fadeIn'
             sx={{
                 mr: 2,
+                backgroundColor: palette.info.main,
+                borderRadius: 3,
                 display: {
                     xs: showSmall ? 'flex' : 'none',
                     md: showMedium ? 'flex' : 'none',
                 }
             }} 
+            variant='outlined'
             size='small' 
-            variant='outlined' 
             disableElevation
             aria-label="outlined primary button group"
         >
             <Button
                 color={currentTheme === 'light' ?  'secondary' : 'primary'}
                 onClick={() => changeTheme('light')}
-                variant={currentTheme === 'light' ? 'contained' : 'outlined'}
-                sx={currentTheme === 'light' ? {":hover": {backgroundColor: 'secondary.main'}} : {}}
             >
                 Light
             </Button>
             <Button
                 color={currentTheme === 'dark' ?  'secondary' : 'primary'}
                 onClick={() => changeTheme('dark')}
-                variant={currentTheme === 'dark' ? 'contained' : 'outlined'}
             >
                 Dark
             </Button>
             <Button
                 color={currentTheme === 'system' ?  'secondary' : 'primary'}
                 onClick={() => changeTheme('system')}
-                variant={currentTheme === 'system' ? 'contained' : 'outlined'}
-                sx={{
-                    ":hover": {
-                        color: palette.mode === 'dark' ? 'primary.main' : '#000'
-                    }
-                }}
             >
                 System
             </Button>

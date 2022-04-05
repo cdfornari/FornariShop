@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from 'react';
+import { FC, useMemo, useState, useEffect } from 'react';
 import NextLink from 'next/link';
 import { Box, Card, CardActionArea, CardMedia, Grid, Link, Typography } from '@mui/material';
 import { iProduct } from '../../interfaces/product';
@@ -13,6 +13,12 @@ export const ProductCard: FC<Props> = ({product}) => {
     const productImage = useMemo(() => (
         isHovered ? `/products/${product.images[1]}` : `/products/${product.images[0]}`
     ), [isHovered, product.images]);
+    useEffect(() => {
+        setTimeout(() => {
+            if(!isImgLoaded)
+            setIsImgLoaded(true);
+        }, 800);
+    }, []);
     return (
         <Grid item 
             xs={6} 
@@ -37,16 +43,16 @@ export const ProductCard: FC<Props> = ({product}) => {
                         </Link>
                     </NextLink>
                 </Card>
-                <Box 
-                    className='fadeIn'
-                    sx={{
-                        mt: 1,
-                        display: isImgLoaded ? 'block' : 'none',
-                    }} 
-                >
-                    <Typography fontWeight={700}>{product.title}</Typography>
-                    <Typography fontWeight={500}>$ {product.price}</Typography>
-                </Box>
+                    <Box 
+                        className='fadeIn'
+                        sx={{
+                            display: isImgLoaded ? 'block' : 'none',
+                            mt: 1
+                        }} 
+                    >
+                        <Typography fontWeight={700}>{product.title}</Typography>
+                        <Typography fontWeight={500}>$ {product.price}</Typography>
+                    </Box>
             </div>
         </Grid>
     )

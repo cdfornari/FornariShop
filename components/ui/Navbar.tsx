@@ -1,14 +1,20 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { AppBar, Badge, Box, Button, IconButton, Link, Toolbar, Typography } from '@mui/material'
-import { SearchSharp, ShoppingCartSharp } from '@mui/icons-material';
+import { AppBar, Badge, Box, Button, IconButton, Input, InputAdornment, Link, Toolbar, Typography } from '@mui/material'
+import { Close, SearchSharp, ShoppingCartSharp } from '@mui/icons-material';
 import { UIContext } from '../../context';
 import { ThemeSwitcher } from './';
 
 export const Navbar = () => {
-  const {pathname} = useRouter();
+  const {pathname,push} = useRouter();
   const {toggleMenu} = useContext(UIContext);
+  const [isSearchVisible,setIsSearchVisible] = useState(false);
+  const [searchQuery,setSearchQuery] = useState('');
+  const onSearch = () => {
+    if(searchQuery.trim().length === 0) return;
+    push(`/search/${searchQuery}`);
+  }
   return (
     <AppBar>
         <Toolbar>
@@ -22,10 +28,11 @@ export const Navbar = () => {
             <Box flex={1} />
 
             <Box 
+              className='fadeIn'
               sx={{
                 display: {
                   xs: 'none',
-                  sm: 'flex'
+                  sm: isSearchVisible ? 'none' : 'flex',
                 }
               }}>
               <NextLink href='/category/men' passHref>
@@ -45,13 +52,41 @@ export const Navbar = () => {
               </NextLink>
             </Box>
 
-            <Box flex={0.7} />
+            <Box flex={{xs: 1, md: 0.68}} />
 
-            <ThemeSwitcher showMedium/>
+            <ThemeSwitcher showMedium={!isSearchVisible}/>
 
-            <IconButton>
-              <SearchSharp />
-            </IconButton>
+            {
+              isSearchVisible
+              ? 
+                <Input
+                  autoFocus
+                  className='fadeIn'
+                  type='text'
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={(e)=> e.key === 'Enter' && onSearch()}
+                  sx={{display: {xs: 'none', sm: 'flex'}}}
+                  endAdornment={
+                      <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={()=>setIsSearchVisible(false)}
+                          >
+                            <Close />
+                          </IconButton>
+                      </InputAdornment>
+                  }
+                />
+              :
+                <IconButton 
+                  sx={{display: {xs: 'none',md: 'block'}}}
+                  onClick={()=>setIsSearchVisible(true)}
+                >
+                  <SearchSharp />
+                </IconButton>
+            }
 
             <NextLink href='/cart' passHref>
               <Link>
@@ -64,7 +99,10 @@ export const Navbar = () => {
             </NextLink>
 
             <Button
-              onClick={toggleMenu}
+              onClick={() => {
+                setIsSearchVisible(false);
+                toggleMenu();
+              }}
             >Menu</Button>
         </Toolbar>
     </AppBar>

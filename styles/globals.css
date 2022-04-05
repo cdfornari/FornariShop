@@ -1,4 +1,4 @@
-body,header div, main{
+body,header div, main,img{
   transition: all 0.35s ease-in;
   -webkit-transition: all 0.35s ease-in;
 }
