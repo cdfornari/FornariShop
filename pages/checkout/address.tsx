@@ -44,7 +44,12 @@ const AdressPage = () => {
 
         <Box sx={{mt: 5}} display='flex' justifyContent='center'>
             <Link href='/checkout/summary'>
-                <Button color='secondary' className='circular-btn' size='large'>
+                <Button 
+                    color='secondary' 
+                    className='circular-btn' 
+                    size='large'
+                    variant='contained'
+                >
                     Review purchase
                 </Button>
             </Link>

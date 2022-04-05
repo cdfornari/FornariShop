@@ -1,15 +1,23 @@
 import type { AppProps } from 'next/app'
+import { SWRConfig } from 'swr';
 import { CssBaseline } from '@mui/material'
-import { ThemeContextProvider } from '../context/theme/ThemeContextProvider';
+import { ThemeContextProvider,UIProvider } from '../context';
 import '../styles/globals.css'
-import { useEffect, useState } from 'react';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ThemeContextProvider>
-      <CssBaseline />
-      <Component {...pageProps} />
-    </ThemeContextProvider>
+    <SWRConfig
+      value={{
+        fetcher: (resource, init) => fetch(resource, init).then(res => res.json())
+      }}
+    >
+      <ThemeContextProvider>
+        <UIProvider>
+          <CssBaseline />
+          <Component {...pageProps} />
+        </UIProvider>
+      </ThemeContextProvider>
+    </SWRConfig>
   )
 }
 

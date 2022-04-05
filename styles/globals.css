@@ -1,5 +1,6 @@
 body,header div, main{
   transition: all 0.35s ease-in;
+  -webkit-transition: all 0.35s ease-in;
 }
 
 @keyframes fadeIn {
@@ -17,7 +18,6 @@ body,header div, main{
   animation-duration: 0.5s;
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
-
   -webkit-animation-name: fadeIn;
   animation-name: fadeIn;
 }

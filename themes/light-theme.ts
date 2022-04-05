@@ -4,13 +4,13 @@ export const lightTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '##1E1E1E'
+      main: '#1E1E1E'
     },
     secondary: {
       main: '#3A64D8'
     },
     info: {
-      main: '#1E1E1E'
+      main: '#FFF'
     }
   },
   typography: {
@@ -23,8 +23,7 @@ export const lightTheme = createTheme({
   components: {
     MuiLink: {
       defaultProps: {
-        underline: 'none',
-        color: 'inherit',
+        underline: 'none'
       },
       styleOverrides: {
         root: {
@@ -55,7 +54,7 @@ export const lightTheme = createTheme({
         },
         h2: {
           fontSize: 20,
-          fontWeight: 700
+          fontWeight: 500
         },
         h6: {
           fontWeight: 800
@@ -72,6 +71,7 @@ export const lightTheme = createTheme({
         variant: 'contained',
         size: 'small',
         disableElevation: true,
+        color: 'info'
       },
       styleOverrides: {
         root: {
@@ -80,6 +80,7 @@ export const lightTheme = createTheme({
           borderRadius: 10,
           ":hover": {
             backgroundColor: 'rgba(90,90,90,0.1)',
+            color: '#1E1E1E',
             transition: 'all 0.3s ease-in-out'
           }
         }

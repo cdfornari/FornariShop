@@ -58,6 +58,7 @@ const SummaryPage = () => {
                             <Button 
                                 color='secondary'
                                 className='circular-btn'
+                                variant='contained'
                                 fullWidth
                             >
                                 Confirm Order

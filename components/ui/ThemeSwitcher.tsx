@@ -3,10 +3,11 @@ import { FC, useContext } from 'react'
 import { ThemeContext } from '../../context/theme'
 
 interface Props {
-    showSmall?: boolean
+    showSmall?: boolean;
+    showMedium?: boolean;
 }
 
-export const ThemeSwitcher: FC<Props> = ({showSmall = true}) => {
+export const ThemeSwitcher: FC<Props> = ({showSmall = false, showMedium = false}) => {
     const {currentTheme,changeTheme} = useContext(ThemeContext);
     const {palette} = useTheme();
     return (
@@ -15,8 +16,7 @@ export const ThemeSwitcher: FC<Props> = ({showSmall = true}) => {
                 mr: 2,
                 display: {
                     xs: showSmall ? 'flex' : 'none',
-                    sm: showSmall ? 'flex' : 'none',
-                    md: 'flex'
+                    md: showMedium ? 'flex' : 'none',
                 }
             }} 
             size='small' 

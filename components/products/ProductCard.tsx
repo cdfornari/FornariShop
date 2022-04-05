@@ -8,9 +8,10 @@ interface Props {
 }
 
 export const ProductCard: FC<Props> = ({product}) => {
+    const [isImgLoaded, setIsImgLoaded] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const productImage = useMemo(() => (
-        isHovered ? `products/${product.images[1]}` : `products/${product.images[0]}`
+        isHovered ? `/products/${product.images[1]}` : `/products/${product.images[0]}`
     ), [isHovered, product.images]);
     return (
         <Grid item 
@@ -30,6 +31,7 @@ export const ProductCard: FC<Props> = ({product}) => {
                                     component='img'
                                     image={productImage}
                                     alt={product.title}
+                                    onLoad={() => setIsImgLoaded(true)}
                                 />
                             </CardActionArea>
                         </Link>
@@ -37,7 +39,10 @@ export const ProductCard: FC<Props> = ({product}) => {
                 </Card>
                 <Box 
                     className='fadeIn'
-                    sx={{mt: 1}} 
+                    sx={{
+                        mt: 1,
+                        display: isImgLoaded ? 'block' : 'none',
+                    }} 
                 >
                     <Typography fontWeight={700}>{product.title}</Typography>
                     <Typography fontWeight={500}>$ {product.price}</Typography>

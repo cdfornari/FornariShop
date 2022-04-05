@@ -1,9 +1,14 @@
+import { useContext } from 'react';
 import NextLink from 'next/link';
+import { useRouter } from 'next/router';
 import { AppBar, Badge, Box, Button, IconButton, Link, Toolbar, Typography } from '@mui/material'
 import { SearchSharp, ShoppingCartSharp } from '@mui/icons-material';
+import { UIContext } from '../../context';
 import { ThemeSwitcher } from './';
 
 export const Navbar = () => {
+  const {pathname} = useRouter();
+  const {toggleMenu} = useContext(UIContext);
   return (
     <AppBar>
         <Toolbar>
@@ -25,24 +30,24 @@ export const Navbar = () => {
               }}>
               <NextLink href='/category/men' passHref>
                   <Link display='flex' alignItems='center'>
-                    <Button>Men</Button>
+                    <Button color={pathname.includes('/men') ? 'primary' : 'info'}>Men</Button>
                   </Link>
               </NextLink>
               <NextLink href='/category/women' passHref>
                   <Link display='flex' alignItems='center'>
-                    <Button>Women</Button>
+                    <Button color={pathname.includes('/women') ? 'primary' : 'info'}>Women</Button>
                   </Link>
               </NextLink>
-              <NextLink href='/category/kids' passHref>
+              <NextLink href='/category/kid' passHref>
                   <Link display='flex' alignItems='center'>
-                    <Button>Kids</Button>
+                    <Button color={pathname.includes('/kid') ? 'primary' : 'info'}>Kids</Button>
                   </Link>
               </NextLink>
             </Box>
 
             <Box flex={0.7} />
 
-            <ThemeSwitcher showSmall={false}/>
+            <ThemeSwitcher showMedium/>
 
             <IconButton>
               <SearchSharp />
@@ -58,7 +63,9 @@ export const Navbar = () => {
               </Link>
             </NextLink>
 
-            <Button>Menu</Button>
+            <Button
+              onClick={toggleMenu}
+            >Menu</Button>
         </Toolbar>
     </AppBar>
   )

@@ -4,16 +4,16 @@ export const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '##1E1E1E'
+      main: '#EEEEEE'
     },
     secondary: {
       main: '#3A64D8'
     },
     info: {
-      main: 'rgba(90,90,90,0.65)'
+      main: '#121212'
     },
     error: {
-      main: '#f21361'
+      main: '#F21361'
     }
   },
   typography: {
@@ -58,7 +58,7 @@ export const darkTheme = createTheme({
         },
         h2: {
           fontSize: 20,
-          fontWeight: 700
+          fontWeight: 500
         },
         h6: {
           fontWeight: 800
@@ -73,22 +73,20 @@ export const darkTheme = createTheme({
     MuiButton: {
       defaultProps: {
         variant: 'contained',
+        color: 'info',
         size: 'small',
         disableElevation: true
       },
       styleOverrides: {
         root: {
-          color: '#fff',
           textTransform: 'none',
           boxShadow: 'none',
           borderRadius: 10,
           ":hover": {
-            backgroundColor: 'rgba(90,90,90,0.15)',
+            backgroundColor: 'rgba(90,90,90,0.5)',
+            color: '#EEEEEE',
             transition: 'all 0.3s ease-in-out'
           },
-        },
-        text: {
-          color: '#f21361',
         }
       }
     },
