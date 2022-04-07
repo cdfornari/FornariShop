@@ -87,6 +87,11 @@ export const darkTheme = createTheme({
             color: '#EEEEEE',
             transition: 'all 0.3s ease-in-out'
           },
+        },
+        text: {
+          ":hover": {
+            color: '#F21361'
+          }
         }
       }
     },

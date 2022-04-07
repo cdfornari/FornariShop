@@ -1,15 +1,32 @@
+import { useContext, useState } from 'react';
 import { NextPage,GetStaticPaths,GetStaticProps } from 'next';
 import { Box, Button, Chip, Grid, Typography } from '@mui/material';
 import { ShopLayout } from '../../components/layouts'
 import { ItemCounter, ProductSlideshow, SizeSelector } from '../../components/ui';
 import { dbProducts } from '../../database';
-import { iProduct } from '../../interfaces';
+import { iProduct, iSize } from '../../interfaces';
+import { useRouter } from 'next/router';
+import { CartContext } from '../../context';
 
 interface Props {
   product: iProduct;
 }
 
 const ProductPage: NextPage<Props> = ({product}) => {
+  const router = useRouter();
+  const {addProductToCart} = useContext(CartContext);
+  const [quantity, setQuantity] = useState(1);
+  const [size, setSize] = useState<iSize>();
+  const addToCart = () => {
+    if(!size) return;
+    addProductToCart({
+      ...product,
+      size,
+      quantity,
+      image: product.images[0]
+    });
+    router.push('/cart');
+  }
   return (
     <ShopLayout title={product.title} pageDescription={product.description}>
       <Grid container spacing={3}>
@@ -27,18 +44,33 @@ const ProductPage: NextPage<Props> = ({product}) => {
 
             <Box sx={{my: 2}}>
               <Typography variant='subtitle2'>Quantity</Typography>
-              <ItemCounter />
+              <ItemCounter 
+                count={quantity}
+                maxValue={product.inStock}
+                onChange={setQuantity}
+              />
               <SizeSelector  
-                //selectedSize={initialData.products[0].sizes[0]}
+                selectedSize={size}
                 sizes={product.sizes}
+                onSelectSize={setSize}
               />
             </Box>
 
-            <Button color='secondary' className='circular-btn'>
-              Add to Cart
-            </Button>
-
-            {/* <Chip label='Not Available' color='error' variant='outlined'/> */}
+            {
+              product.inStock > 0 
+              ? <Button 
+                  className='circular-btn'
+                  color='secondary'
+                  onClick={addToCart} 
+                >
+                  {
+                    size 
+                    ? 'Add to Cart'
+                    : 'Select Size'
+                  }
+                </Button>
+              : <Chip label='Out of stock' color='error' variant='outlined'/>
+            }
 
             <Box sx={{mt: 3}}>
               <Typography variant='subtitle2'>Description</Typography>
@@ -78,6 +110,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
 }
 
 /* import { GetServerSideProps } from 'next'
+import { CartContext } from '../../context/cart/CartContext';
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const {slug = ''} = ctx.params as {slug: string};
   const product = await dbProducts.getProductBySlug(slug);

@@ -3,11 +3,13 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { AppBar, Badge, Box, Button, IconButton, Input, InputAdornment, Link, Toolbar, Typography } from '@mui/material'
 import { Close, SearchSharp, ShoppingCartSharp } from '@mui/icons-material';
-import { UIContext } from '../../context';
+import { CartContext, UIContext } from '../../context';
 import { ThemeSwitcher } from './';
 
 export const Navbar = () => {
   const {pathname,push} = useRouter();
+  const {summary} = useContext(CartContext);
+  const {productCount} = summary;
   const {toggleMenu} = useContext(UIContext);
   const [isSearchVisible,setIsSearchVisible] = useState(false);
   const [searchQuery,setSearchQuery] = useState('');
@@ -88,10 +90,10 @@ export const Navbar = () => {
                 </IconButton>
             }
 
-            <NextLink href='/cart' passHref>
+            <NextLink href={productCount > 0 ? '/cart' : '/cart/empty'} passHref>
               <Link>
                 <IconButton>
-                  <Badge badgeContent={2} color='secondary'>
+                  <Badge badgeContent={productCount < 10 ? productCount : '+9'} color='secondary'>
                     <ShoppingCartSharp />
                   </Badge>
                 </IconButton>

@@ -83,6 +83,16 @@ export const lightTheme = createTheme({
             color: '#1E1E1E',
             transition: 'all 0.3s ease-in-out'
           }
+        },
+        text: {
+          ":hover": {
+            color: 'rgb(211, 47, 47)'
+          }
+        },
+        containedSecondary: {
+          ":hover": {
+            color: 'rgba(250,250,250,0.95)',
+          }
         }
       }
     },
