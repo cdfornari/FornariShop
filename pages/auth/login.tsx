@@ -1,36 +1,105 @@
-import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
+import { Box, Button, Chip, Grid, Link, TextField, Typography } from '@mui/material';
+import { useForm } from 'react-hook-form';
 import { AuthLayout } from '../../components/layouts';
 import NextLink from 'next/link';
+import { validations } from '../../utils';
+import { ErrorOutline } from '@mui/icons-material';
+import { useContext, useState } from 'react';
+import { AuthContext } from '../../context/auth/AuthContext';
+import { useRouter } from 'next/router';
+
+type FormData = {
+    email: string,
+    password: string,
+};
 
 const LoginPage = () => {
-  return (
-    <AuthLayout title='Login'>
-        <Box sx={{width: 350, padding: '10px 20px'}}>
-            <Grid container spacing={2}>
-                <Grid item xs={12} sx={{mb: 0.5}}>
-                    <Typography variant='h1' component='h1'>Login</Typography>
-                </Grid>
-                <Grid item xs={12}>
-                    <TextField label='Email' fullWidth />
-                </Grid>
-                <Grid item xs={12}>
-                    <TextField label='Password' fullWidth />
-                </Grid>
-                <Grid item xs={12}>
-                    <Button fullWidth className='circular-btn' color='secondary'>
-                        Enter
-                    </Button>
-                </Grid>
-                <Grid item xs={12} display='flex' justifyContent='end'>
-                    <NextLink href='/auth/register' passHref>
-                        <Link underline='always'>
-                            Don&lsquo;t have an account?
-                        </Link>
-                    </NextLink>
-                </Grid>
-            </Grid>
-        </Box>
-    </AuthLayout>
-  )
+    const {replace} = useRouter();
+    const {login,user} = useContext(AuthContext);
+    const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
+    const [showError, setShowError] = useState(false);
+    
+    const onLogin = async (formValues: FormData) => {
+        setShowError(false);
+        const isValidLogin = await login(formValues.email, formValues.password);
+        if(!isValidLogin) {
+            setShowError(true);
+            setTimeout(() => setShowError(false), 3000);
+            return;
+        }
+        replace('/');
+    };
+
+    return (
+        <AuthLayout title='Login'>
+            <form onSubmit={handleSubmit(onLogin)} noValidate>  
+                <Box sx={{width: 350, padding: '10px 20px'}}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sx={{mb: 0.5}}>
+                            <Typography variant='h1' component='h1'>Login</Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                type='email'
+                                label='Email' 
+                                fullWidth
+                                {...register('email', {
+                                    required: 'Email is required',
+                                    validate: validations.isEmail
+                                })}
+                                error={!!errors.email}
+                                helperText={errors.email?.message}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                type='password'
+                                label='Password' 
+                                fullWidth 
+                                {...register('password', {
+                                    required: 'Password is required',
+                                    minLength: {
+                                        value: 6,
+                                        message: 'Password must be at least 6 characters',
+                                    },
+
+                                })}
+                                error={!!errors.password}
+                                helperText={errors.password?.message}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Button 
+                                type='submit'
+                                fullWidth 
+                                className='circular-btn' 
+                                color='secondary'
+                            >
+                                Enter
+                            </Button>
+                            <Chip 
+                                label='Email and password do not match'
+                                color='error'
+                                variant='outlined'
+                                icon={<ErrorOutline />}
+                                className='fadeIn'
+                                sx={{
+                                    mt: 1, width: '100%',
+                                    display: showError ? 'flex' : 'none'
+                                }}
+                            />
+                        </Grid>
+                        <Grid item xs={12} display='flex' justifyContent='end'>
+                            <NextLink href='/auth/register' passHref>
+                                <Link underline='always'>
+                                    Don&lsquo;t have an account?
+                                </Link>
+                            </NextLink>
+                        </Grid>
+                    </Grid>
+                </Box>
+            </form>
+        </AuthLayout>
+    )
 }
 export default LoginPage
