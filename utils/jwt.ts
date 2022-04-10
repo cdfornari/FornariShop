@@ -19,6 +19,8 @@ export const signToken = (_id: string, email: string) => {
 export const isValidToken = (token: string): Promise<string> => {
     if(!process.env.JWT_SECRET_SEED){
         throw new Error('JWT_SECRET_SEED is not defined');
+    }else if(token.length <= 10){
+        return Promise.reject('Token is not valid');
     }
     return new Promise((resolve, reject) => {
         try {

@@ -14,8 +14,8 @@ type FormData = {
 };
 
 const LoginPage = () => {
-    const {replace} = useRouter();
-    const {login,user} = useContext(AuthContext);
+    const {replace,query} = useRouter();
+    const {login} = useContext(AuthContext);
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
     const [showError, setShowError] = useState(false);
     
@@ -27,7 +27,8 @@ const LoginPage = () => {
             setTimeout(() => setShowError(false), 3000);
             return;
         }
-        replace('/');
+        const path = query.page?.toString() || '/';
+        replace(path);
     };
 
     return (
@@ -90,7 +91,7 @@ const LoginPage = () => {
                             />
                         </Grid>
                         <Grid item xs={12} display='flex' justifyContent='end'>
-                            <NextLink href='/auth/register' passHref>
+                            <NextLink href={`/auth/register?page=${query.page?.toString() || '/'}`} passHref>
                                 <Link underline='always'>
                                     Don&lsquo;t have an account?
                                 </Link>

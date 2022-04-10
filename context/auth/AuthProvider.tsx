@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { useRouter } from 'next/router';
 import { FC, useReducer, useEffect } from 'react';
 import { api } from '../../api';
 import { iUser } from '../../interfaces';
@@ -17,13 +18,14 @@ const initialState: AuthState = {
 
 export const AuthProvider: FC = ({children}) => {
     const [state,dispatch] = useReducer(authReducer, initialState);
+    const {reload} = useRouter();
 
     const validateToken = async () => {
         if(!Cookies.get('token')) return;
         try {
             const {data} = await api.get('/user/validation')
             const {user,token} = data;
-            Cookies.set('token',token);
+            Cookies.set('token',token,{expires: 7});
             dispatch({type:'[AUTH] Login',payload: user});
         } catch (error) {
             console.log(error);
@@ -40,7 +42,7 @@ export const AuthProvider: FC = ({children}) => {
         try {
             const { data } = await api.post('/user/login', {email, password});
             const { token,user } = data;
-            Cookies.set('token', token);
+            Cookies.set('token', token,{expires: 7});
             dispatch({
                 type: '[AUTH] Login',
                 payload: user
@@ -56,7 +58,7 @@ export const AuthProvider: FC = ({children}) => {
         try {
             const { data } = await api.post('/user/register', {name, email, password});
             const { token,user } = data;
-            Cookies.set('token', token);
+            Cookies.set('token', token,{expires: 7});
             dispatch({
                 type: '[AUTH] Login',
                 payload: user
@@ -79,9 +81,15 @@ export const AuthProvider: FC = ({children}) => {
             }
          }
     }
-    
+
+    const logout = () => {
+        Cookies.remove('token');
+        Cookies.remove('cart');
+        reload();
+    }
+
     return (
-        <AuthContext.Provider value={{...state, login,register}}>
+        <AuthContext.Provider value={{...state, login,register,logout}}>
             {children}
         </AuthContext.Provider>
     )

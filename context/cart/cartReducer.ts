@@ -1,11 +1,12 @@
 import { iCartProduct,iOrderSummary } from '../../interfaces';
-import { CartState } from './';
+import { CartState,ShippingAddress } from './';
 
 type cartAction =
 |{ type: 'SET CART', payload: iCartProduct[] }
 |{ type: 'UPDATE PRODUCT QUANTITY', payload: iCartProduct }
 |{ type: 'REMOVE PRODUCT', payload: iCartProduct }
 |{ type: 'SET SUMMARY', payload: iOrderSummary }
+|{ type: 'SET ADDRESS', payload: ShippingAddress }
 
 export const cartReducer = (state: CartState, action: cartAction) => {
     switch (action.type) {
@@ -30,6 +31,11 @@ export const cartReducer = (state: CartState, action: cartAction) => {
             return {
                 ...state,
                 summary: action.payload
+            };
+        case `SET ADDRESS`:
+            return {
+                ...state,
+                address: action.payload
             };
         default:
             return state;

@@ -2,12 +2,13 @@ import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Box, Divider, Drawer, IconButton, Input, InputAdornment, List, ListItem, ListItemIcon, ListItemText, ListSubheader } from "@mui/material"
 import { AccountCircleOutlined, AdminPanelSettings, CategoryOutlined, ConfirmationNumberOutlined, EscalatorWarningOutlined, FemaleOutlined, LoginOutlined, MaleOutlined, SearchOutlined, VpnKeyOutlined } from "@mui/icons-material"
-import { UIContext } from '../../context'
+import { AuthContext, UIContext } from '../../context'
 import { ThemeSwitcher } from './ThemeSwitcher';
 
 
 export const SideMenu = () => {
-    const {push} = useRouter();
+    const {push,asPath} = useRouter();
+    const {isLoggedIn,user,logout} = useContext(AuthContext)
     const {isMenuOpen,toggleMenu} = useContext(UIContext);
     const [searchQuery,setSearchQuery] = useState('');
     const navigateTo = (path: string) => {
@@ -50,20 +51,23 @@ export const SideMenu = () => {
                         />
                     </ListItem>
 
-                    <ListItem button>
-                        <ListItemIcon>
-                            <AccountCircleOutlined/>
-                        </ListItemIcon>
-                        <ListItemText primary={'Profile'} />
-                    </ListItem>
-
-                    <ListItem button>
-                        <ListItemIcon>
-                            <ConfirmationNumberOutlined/>
-                        </ListItemIcon>
-                        <ListItemText primary={'My Orders'} />
-                    </ListItem>
-
+                    {
+                        isLoggedIn &&
+                        <>
+                            <ListItem button>
+                                <ListItemIcon>
+                                    <AccountCircleOutlined/>
+                                </ListItemIcon>
+                                <ListItemText primary={'Profile'} />
+                            </ListItem>
+                            <ListItem button>
+                                <ListItemIcon>
+                                    <ConfirmationNumberOutlined/>
+                                </ListItemIcon>
+                                <ListItemText primary={'My Orders'} />
+                            </ListItem>
+                        </>
+                    }
 
                     <ListItem 
                         button 
@@ -98,45 +102,56 @@ export const SideMenu = () => {
                         <ListItemText primary={'Kids'} />
                     </ListItem>
 
+                    {
+                        isLoggedIn 
+                        ?                    
+                            <ListItem 
+                                button
+                                onClick={logout}
+                            >
+                                <ListItemIcon>
+                                    <LoginOutlined/>
+                                </ListItemIcon>
+                                <ListItemText primary={'Sign Out'} />
+                            </ListItem>
+                        :
+                            <ListItem 
+                                button 
+                                onClick={()=>navigateTo(`/auth/login?page=${asPath}`)}
+                            >
+                                <ListItemIcon>
+                                    <VpnKeyOutlined/>
+                                </ListItemIcon>
+                                <ListItemText primary={'Login'} />
+                            </ListItem>
+                    }
 
-                    <ListItem button>
-                        <ListItemIcon>
-                            <VpnKeyOutlined/>
-                        </ListItemIcon>
-                        <ListItemText primary={'Login'} />
-                    </ListItem>
+                    {
+                        user?.role === 'admin' &&
+                        <>
+                            <Divider />
+                            <ListSubheader>Admin Panel</ListSubheader>
 
-                    <ListItem button>
-                        <ListItemIcon>
-                            <LoginOutlined/>
-                        </ListItemIcon>
-                        <ListItemText primary={'Sign Out'} />
-                    </ListItem>
-
-
-                    {/* Admin */}
-                    <Divider />
-                    <ListSubheader>Admin Panel</ListSubheader>
-
-                    <ListItem button>
-                        <ListItemIcon>
-                            <CategoryOutlined/>
-                        </ListItemIcon>
-                        <ListItemText primary={'Products'} />
-                    </ListItem>
-                    <ListItem button>
-                        <ListItemIcon>
-                            <ConfirmationNumberOutlined/>
-                        </ListItemIcon>
-                        <ListItemText primary={'Orders'} />
-                    </ListItem>
-
-                    <ListItem button>
-                        <ListItemIcon>
-                            <AdminPanelSettings/>
-                        </ListItemIcon>
-                        <ListItemText primary={'Users'} />
-                    </ListItem>
+                            <ListItem button>
+                                <ListItemIcon>
+                                    <CategoryOutlined/>
+                                </ListItemIcon>
+                                <ListItemText primary={'Products'} />
+                            </ListItem>
+                            <ListItem button>
+                                <ListItemIcon>
+                                    <ConfirmationNumberOutlined/>
+                                </ListItemIcon>
+                                <ListItemText primary={'Orders'} />
+                            </ListItem>
+                            <ListItem button>
+                                <ListItemIcon>
+                                    <AdminPanelSettings/>
+                                </ListItemIcon>
+                                <ListItemText primary={'Users'} />
+                            </ListItem>
+                        </>
+                    }
 
                     <ListItem sx={{mt: 1, ml: 3}}>
                         <ThemeSwitcher showSmall/>
