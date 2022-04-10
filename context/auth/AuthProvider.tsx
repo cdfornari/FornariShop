@@ -85,6 +85,8 @@ export const AuthProvider: FC = ({children}) => {
     const logout = () => {
         Cookies.remove('token');
         Cookies.remove('cart');
+        Cookies.remove('address');
+        Cookies.remove('country');
         reload();
     }
 
