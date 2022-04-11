@@ -1,12 +1,13 @@
-import { Box, Button, Chip, Grid, Link, TextField, Typography } from '@mui/material';
+import { useRouter } from 'next/router';
+import { getProviders, signIn } from 'next-auth/react';
+import { Box, Button, Chip, Divider, Grid, Link, TextField, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { AuthLayout } from '../../components/layouts';
 import NextLink from 'next/link';
 import { validations } from '../../utils';
-import { ErrorOutline } from '@mui/icons-material';
-import { useContext, useState } from 'react';
-import { AuthContext } from '../../context/auth/AuthContext';
-import { useRouter } from 'next/router';
+import { ErrorOutline, GitHub } from '@mui/icons-material';
+import { useContext, useState, useEffect } from 'react';
+//import { AuthContext } from '../../context/auth/AuthContext';
 
 type FormData = {
     email: string,
@@ -14,21 +15,29 @@ type FormData = {
 };
 
 const LoginPage = () => {
+    //const {login} = useContext(AuthContext);
     const {replace,query} = useRouter();
-    const {login} = useContext(AuthContext);
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
     const [showError, setShowError] = useState(false);
+
+    const [providers, setProviders] = useState<any>({})
+    useEffect(() => {
+      getProviders().then(providers => {
+        setProviders(providers)
+      })
+    }, [])
     
     const onLogin = async (formValues: FormData) => {
         setShowError(false);
-        const isValidLogin = await login(formValues.email, formValues.password);
+        await signIn('credentials',formValues);
+        /* const isValidLogin = await login(formValues.email, formValues.password);
         if(!isValidLogin) {
             setShowError(true);
             setTimeout(() => setShowError(false), 3000);
             return;
         }
         const path = query.page?.toString() || '/';
-        replace(path);
+        replace(path); */
     };
 
     return (
@@ -96,6 +105,25 @@ const LoginPage = () => {
                                     Don&lsquo;t have an account?
                                 </Link>
                             </NextLink>
+                        </Grid>
+                        <Grid item xs={12} display='flex' justifyContent='end' flexDirection='column'>
+                            <Divider sx={{width: '100%',mb: 2}}/>
+                            {
+                                Object.values(providers).map((provider: any) => (
+                                    (provider.id !== 'credentials') && 
+                                    <Button
+                                        key={provider.id}
+                                        variant='outlined'
+                                        fullWidth
+                                        color='primary'
+                                        sx={{mb: 1}}
+                                        onClick={() => signIn(provider.id)}
+                                    >
+                                        <GitHub sx={{mr: 1}}/>
+                                        {provider.name}
+                                    </Button>  
+                                )) 
+                            }
                         </Grid>
                     </Grid>
                 </Box>

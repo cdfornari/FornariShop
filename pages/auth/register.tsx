@@ -1,10 +1,11 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Box, Button, Chip, Grid, Link, TextField, Typography } from '@mui/material';
-import { ErrorOutline } from '@mui/icons-material';
+import NextLink from 'next/link';
+import { getProviders, signIn } from 'next-auth/react';
+import { Box, Button, Chip, Divider, Grid, Link, TextField, Typography } from '@mui/material';
+import { ErrorOutline, GitHub } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
 import { AuthLayout } from '../../components/layouts';
-import NextLink from 'next/link';
 import { validations } from '../../utils';
 import { AuthContext } from '../../context';
 
@@ -21,6 +22,13 @@ const RegisterPage = () => {
     const [showError, setShowError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
+    const [providers, setProviders] = useState<any>({})
+    useEffect(() => {
+      getProviders().then(providers => {
+        setProviders(providers)
+      })
+    }, [])
+
     const onRegister = async (formValues: FormData) => {
         setShowError(false);
         const {hasError,message} = await registerUser(formValues.name,formValues.email,formValues.password)
@@ -30,8 +38,9 @@ const RegisterPage = () => {
             setTimeout(() => setShowError(false), 3000);
             return;
         }
-        const path = query.page?.toString() || '/';
-        replace(path);
+        await signIn('credentials',formValues);
+        /* const path = query.page?.toString() || '/';
+        replace(path); */
     }
 
     return (
@@ -114,6 +123,25 @@ const RegisterPage = () => {
                                     Already have an account?
                                 </Link>
                             </NextLink>
+                        </Grid>
+                        <Grid item xs={12} display='flex' justifyContent='end' flexDirection='column'>
+                            <Divider sx={{width: '100%',mb: 2}}/>
+                            {
+                                Object.values(providers).map((provider: any) => (
+                                    (provider.id !== 'credentials') && 
+                                    <Button
+                                        key={provider.id}
+                                        variant='outlined'
+                                        fullWidth
+                                        color='primary'
+                                        sx={{mb: 1}}
+                                        onClick={() => signIn(provider.id)}
+                                    >
+                                        <GitHub sx={{mr: 1}}/>
+                                        {provider.name}
+                                    </Button>  
+                                )) 
+                            }
                         </Grid>
                     </Grid>
                 </Box>
