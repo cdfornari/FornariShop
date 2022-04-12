@@ -1,5 +1,5 @@
-import { iCartProduct,iOrderSummary } from '../../interfaces';
-import { CartState,ShippingAddress } from './';
+import { iCartProduct,iOrderSummary, ShippingAddress } from '../../interfaces';
+import { CartState } from './';
 
 type cartAction =
 |{ type: 'SET CART', payload: iCartProduct[] }

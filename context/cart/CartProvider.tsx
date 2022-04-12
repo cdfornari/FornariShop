@@ -1,23 +1,12 @@
 import { FC, useReducer, useEffect, useRef } from 'react';
 import Cookies from 'js-cookie';
 import { CartContext,cartReducer } from './';
-import { iCartProduct,iOrderSummary } from '../../interfaces';
+import { iCartProduct,iOrderSummary, ShippingAddress } from '../../interfaces';
 
 export interface CartState {
     address?: ShippingAddress;
     cart: iCartProduct[];
     summary: iOrderSummary;
-}
-
-export interface ShippingAddress {
-    firstName: string;
-    lastName: string;
-    phone: string;
-    address: string;
-    address2?: string;
-    city: string;
-    country: string;
-    zip: string;
 }
 
 const initialState: CartState = {
@@ -68,7 +57,7 @@ export const CartProvider: FC = ({children}) => {
         let foundProduct = false;
         const newCart = state.cart.map(productInCart => {
             if (
-                productInCart._id !== product._id
+                productInCart.slug !== product.slug
                 || productInCart.size !== product.size
             ) return productInCart;
             foundProduct = true;
