@@ -3,6 +3,7 @@ import { CartState } from './';
 
 type cartAction =
 |{ type: 'SET CART', payload: iCartProduct[] }
+|{ type: 'DELETE CART'}
 |{ type: 'UPDATE PRODUCT QUANTITY', payload: iCartProduct }
 |{ type: 'REMOVE PRODUCT', payload: iCartProduct }
 |{ type: 'SET SUMMARY', payload: iOrderSummary }
@@ -21,6 +22,11 @@ export const cartReducer = (state: CartState, action: cartAction) => {
                 cart: state.cart.map(product => 
                     product._id === action.payload._id && product.size === action.payload.size
                     ? action.payload : product)
+            };
+        case 'DELETE CART':
+            return {
+                ...state,
+                cart: []
             };
         case `REMOVE PRODUCT`:
             return {

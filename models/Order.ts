@@ -8,10 +8,9 @@ const orderSchema = new Schema({
         required: true
     },
     orderItems: [{
-        product: {
+        _id: {
             type: Schema.Types.ObjectId,
-            ref: 'Product',
-            required: true
+            ref: 'Product'
         },
         title:{
             type: String,

@@ -1,90 +1,120 @@
-import NextLink from 'next/link'
-import { Typography, Grid, Card, Link, CardContent, Divider, Box, Button, Chip } from '@mui/material'
+import { GetServerSideProps, NextPage } from 'next'
+import { getSession } from 'next-auth/react'
+import { Typography, Grid, Card, CardContent, Divider, Box, Chip, Button } from '@mui/material'
+import { CreditCardOffOutlined, CreditScoreOutlined } from '@mui/icons-material'
 import { CartList, OrderSummary } from '../../components/cart'
 import { ShopLayout } from '../../components/layouts'
-import { CreditCardOffOutlined, CreditScoreOutlined } from '@mui/icons-material'
+import { dbOrders } from '../../database'
+import { iOrder } from '../../interfaces';
 
-const OrderPage = () => {
-  return (
-    <ShopLayout title='Order id' pageDescription='Order id'>
-        <Typography variant='h1' component='h1' sx={{mb: 2}}>
-          Order id
-        </Typography>
-
-        <Chip 
-            sx={{my: 2}}
-            label='Pending payment'
-            variant='outlined'
-            color='error'
-            icon={<CreditCardOffOutlined/>}
-        />
-        <Chip 
-            sx={{my: 2}}
-            label='Paid'
-            variant='outlined'
-            color='success'
-            icon={<CreditScoreOutlined/>}
-        />
-
-        <Grid container>
-            <Grid item xs={12} sm={7}>
-               <CartList />
-            </Grid>
-
-            <Grid item xs={12} sm={5}>
-                <Card className='summary-card'>
-                    <CardContent>
-                        <Typography variant='h2'>Order (3 products)</Typography>
-                        <Divider sx={{my: 1}}/>
-
-                        <Grid container>
-                            <Grid item xs={6}>
-                                <Typography variant='subtitle1'>Shipping address</Typography>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <Box display='flex' justifyContent='end'>
-                                    <NextLink href='/checkout/address' passHref>
-                                        <Link underline='always'>
-                                            Edit
-                                        </Link>
-                                    </NextLink>
-                                </Box>
-                            </Grid>
-                        </Grid>
-
-                        <Typography variant='body1'>Carlos Fornari</Typography>
-                        <Typography variant='body1'>28427 Flint Hil Dr.</Typography>
-                        <Typography variant='body1'>Houston TX</Typography>
-                        <Typography variant='body1'>77449</Typography>
-                        <Typography variant='body1'>United States</Typography>
-                        <Typography variant='body1'>+1 (281)5370057</Typography>
-                        <Divider sx={{my: 1}}/>
-
-                        <Box display='flex' justifyContent='end'>
-                            <NextLink href='/cart' passHref>
-                                <Link underline='always'>
-                                    Edit
-                                </Link>
-                            </NextLink>
-                        </Box>
-                        
-                        <OrderSummary />
-
-                        <Box sx={{mt: 3}}>
-                            <Typography variant='h1'>Payment</Typography>
-                        </Box>
-                        <Chip 
-                            sx={{my: 2}}
-                            label='Paid'
-                            variant='outlined'
-                            color='success'
-                            icon={<CreditScoreOutlined/>}
-                        />
-                    </CardContent>
-                </Card>
-            </Grid>
-        </Grid>
-    </ShopLayout>
-  )
+interface Props {
+    order: iOrder
 }
+
+const OrderPage: NextPage<Props> = ({order}) => {
+    return (
+        <ShopLayout title='Order Resume' pageDescription='Order resume'>
+            <Typography variant='h1' component='h1' sx={{mb: 2}}>
+                Order {order._id}
+            </Typography>
+
+            {
+                order.isPaid 
+                ?
+                    <Chip 
+                        label='Paid'
+                        variant='outlined'
+                        color='success'
+                        icon={<CreditScoreOutlined/>}
+                        sx={{mb: 2}}
+                    />
+                :
+                    <Chip 
+                        label='Pending payment'
+                        variant='outlined'
+                        color='error'
+                        icon={<CreditCardOffOutlined/>}
+                        sx={{mb: 2}}
+                    />
+            }
+            
+
+            <Grid container className='fadeIn'>
+                <Grid item xs={12} sm={7}>
+                    <CartList products={order.orderItems} />
+                </Grid>
+
+                <Grid item xs={12} sm={5}>
+                    <Card className='summary-card'>
+                        <CardContent>
+                            <Typography variant='h2'>
+                                Order ({order.summary.productCount} {order.summary.productCount > 1 ? 'products' : 'product'})
+                            </Typography>
+                            <Divider sx={{my: 1}}/>
+
+                            <Typography variant='subtitle1'>Shipping address</Typography>
+
+                            <Typography variant='body1'>{order.shippingAddress.firstName} {order.shippingAddress.lastName}</Typography>
+                            <Typography variant='body1'>{order.shippingAddress.address}</Typography>
+                            {order.shippingAddress.address2 && <Typography variant='body1'>{order.shippingAddress.address2}</Typography>}
+                            <Typography variant='body1'>{order.shippingAddress.city}</Typography>
+                            <Typography variant='body1'>{order.shippingAddress.zip}</Typography>
+                            <Typography variant='body1'>{order.shippingAddress.country}</Typography>
+                            <Typography variant='body1'>{order.shippingAddress.phone}</Typography>
+                            <Divider sx={{my: 1}}/>
+                            
+                            <OrderSummary orderSummary={order.summary}/>
+
+                            <Box sx={{mt: 3}} display='flex' flexDirection='column'>
+                                {
+                                    order.isPaid 
+                                    ?
+                                        <Chip 
+                                            sx={{my: 2}}
+                                            label='Paid'
+                                            variant='outlined'
+                                            color='success'
+                                            icon={<CreditScoreOutlined/>}
+                                        />
+                                    :
+                                        <Button>
+                                            Pay
+                                        </Button>
+                                }
+                            </Box>
+                        </CardContent>
+                    </Card>
+                </Grid>
+            </Grid>
+        </ShopLayout>
+    )
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+    const { id='' } = ctx.query;
+    const session: any = await getSession({req: ctx.req});
+    if(!session) {
+        return {
+            redirect: {
+                destination: `/auth/login?page=/orders/${id}`,
+                permanent: false
+            }
+        }
+    }
+    const order = await dbOrders.getOrderById(id.toString());
+    if(!order || order.user !== session.user._id) {
+        return {
+            redirect: {
+                destination: '/orders/history',
+                permanent: false
+            }
+        }
+    }
+    return {
+        props: {
+            order
+        }
+    }
+}
+
 export default OrderPage

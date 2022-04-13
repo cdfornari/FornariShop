@@ -1,7 +1,9 @@
 import { FC, useReducer, useEffect, useRef } from 'react';
+import axios from 'axios';
 import Cookies from 'js-cookie';
 import { CartContext,cartReducer } from './';
-import { iCartProduct,iOrderSummary, ShippingAddress } from '../../interfaces';
+import { iCartProduct,iOrder,iOrderSummary, ShippingAddress } from '../../interfaces';
+import { api } from '../../api';
 
 export interface CartState {
     address?: ShippingAddress;
@@ -90,10 +92,44 @@ export const CartProvider: FC = ({children}) => {
             payload: address
         })
     }
+    const createOrder = async(): Promise<{hasError: boolean, message: string}> => {
+        if(!state.address) throw new Error('No address');
+        const order: iOrder = {
+            orderItems: state.cart,
+            shippingAddress: state.address,
+            summary: state.summary,
+            isPaid: false
+        }
+        try {
+            const {data} = await api.post<iOrder>('/orders',order);
+            dispatch({type: 'DELETE CART'});
+            return {
+                hasError: false,
+                message: data._id!
+            }
+        } catch (error) {
+            if(axios.isAxiosError(error)){
+                return {
+                    hasError: true,
+                    message: error.response?.data.message
+                }
+            }
+            return {
+                hasError: true,
+                message: 'Error creating order'
+            }
+        }
+    }
 
     return (
         <CartContext.Provider  
-            value={{...state,addProductToCart,updateProductQuantity,removeProduct,updateAddress}}
+            value={{...state,
+                addProductToCart,
+                updateProductQuantity,
+                removeProduct,
+                updateAddress,
+                createOrder
+            }}
         >
             {children}
         </CartContext.Provider>

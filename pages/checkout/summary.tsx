@@ -1,22 +1,37 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
-import { Typography, Grid, Card, CardContent, Divider, Box, Button, Link } from '@mui/material'
+import { Typography, Grid, Card, CardContent, Divider, Box, Button, Link, Chip } from '@mui/material'
 import { CartList, OrderSummary } from '../../components/cart'
 import { ShopLayout } from '../../components/layouts'
 import { CartContext } from '../../context/cart/CartContext';
 import { FullScreenLoading } from '../../components/ui';
 
 const SummaryPage = () => {
-    const {push} = useRouter();
-    const {address,summary} = useContext(CartContext);
+    const {push,replace} = useRouter();
+    const {address,summary,createOrder} = useContext(CartContext);
+
+    const [isPosting, setIsPosting] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+
     useEffect(() => {
         if(!address){
             push('/checkout/address')
         }
     }, [])
 
-    if(!address){
+    const onCreateOrder = async() => {
+        setIsPosting(true);
+        const {hasError,message} = await createOrder();
+        if(hasError){
+            setIsPosting(false);
+            setErrorMessage(message);
+            return;
+        }
+        replace(`/orders/${message}`);
+    }
+
+    if(!address || isPosting){
         return (
             <ShopLayout title={'Order Summary'} pageDescription='Order summary'>
                 <FullScreenLoading/>
@@ -79,15 +94,23 @@ const SummaryPage = () => {
                             
                             <OrderSummary />
 
-                            <Box sx={{mt: 3}}>
+                            <Box sx={{mt: 3}} display='flex' flexDirection='column'>
                                 <Button 
                                     color='secondary'
                                     className='circular-btn'
                                     variant='contained'
                                     fullWidth
+                                    onClick={onCreateOrder}
+                                    disabled={isPosting}
                                 >
                                     Confirm Order
                                 </Button>
+                                <Chip 
+                                    color='error'
+                                    label={errorMessage}
+                                    variant='outlined'
+                                    sx={{mt: 2, display: errorMessage ? 'flex' : 'none'}}
+                                />
                             </Box>
                         </CardContent>
                     </Card>

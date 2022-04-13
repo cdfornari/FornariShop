@@ -13,9 +13,7 @@ export const getAllProducts = async (): Promise<iProduct[]> => {
 
 export const getProductBySlug = async (slug: string): Promise<iProduct | null> => {
     await db.connect();
-    const product = await Product.findOne({slug})
-    .select('title description images price inStock sizes slug')
-    .lean();
+    const product = await Product.findOne({slug}).lean();
     await db.disconnect();
     if(!product) return null;
     return JSON.parse(JSON.stringify(product));
