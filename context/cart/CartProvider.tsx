@@ -28,8 +28,9 @@ export const CartProvider: FC = ({children}) => {
 
     useEffect(() => {
         try {
-            const cookiesCart = Cookies.get('cart') ? JSON.parse(Cookies.get('cart')!) : [];
-            dispatch({type: 'SET CART', payload: cookiesCart});
+            //const cookiesCart = Cookies.get('cart') ? JSON.parse(Cookies.get('cart')!) : [];
+            const lsCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')!) : [];
+            dispatch({type: 'SET CART', payload: lsCart});
         } catch (error) {
             dispatch({type: 'SET CART', payload: []});
         }
@@ -44,7 +45,10 @@ export const CartProvider: FC = ({children}) => {
         if(initialRender.current) {
             initialRender.current = false;
         } else {
-            Cookies.set('cart', JSON.stringify(state.cart),{expires: 7});
+            //Cookies.remove('cart');
+            //cookies ignoring it after 4th product
+            //Cookies.set('cart', JSON.stringify(state.cart),{expires: 7});
+            localStorage.setItem('cart', JSON.stringify(state.cart));
         }
     },[state.cart])
     useEffect(() => {
@@ -59,7 +63,7 @@ export const CartProvider: FC = ({children}) => {
         let foundProduct = false;
         const newCart = state.cart.map(productInCart => {
             if (
-                productInCart.slug !== product.slug
+                productInCart._id !== product._id
                 || productInCart.size !== product.size
             ) return productInCart;
             foundProduct = true;
@@ -67,7 +71,7 @@ export const CartProvider: FC = ({children}) => {
             return productInCart;
         })
         if(!foundProduct){
-            newCart.push(product);
+            newCart.unshift(product);
         }
         dispatch({
             type: 'SET CART',

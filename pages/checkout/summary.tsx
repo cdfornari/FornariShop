@@ -47,15 +47,13 @@ const SummaryPage = () => {
 
             <Grid container>
                 <Grid item xs={12} sm={7}>
-                <CartList />
+                    <CartList />
                 </Grid>
 
                 <Grid item xs={12} sm={5}>
                     <Card className='summary-card'>
                         <CardContent>
-                            <Typography 
-                                variant='h2'
-                            >
+                            <Typography variant='h2'>
                                 {`Order (${summary.productCount} ${summary.productCount > 1 ? 'products' : 'product'})`}
                             </Typography>
                             <Divider sx={{my: 1}}/>

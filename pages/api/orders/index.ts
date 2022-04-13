@@ -51,6 +51,7 @@ const createOrder = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
             user: userId,
             isPaid: false
         })
+        newOrder.summary.total = Math.round(newOrder.summary.total * 100) / 100;
         await newOrder.save();
 
         await db.disconnect();
