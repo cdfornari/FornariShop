@@ -38,7 +38,7 @@ export const OrderSummary: FC<Props> = ({orderSummary}) => {
                 <Typography variant='subtitle1'>Total</Typography>
             </Grid>
             <Grid item xs={6} display='flex' justifyContent='end' sx={{mt: 2}}>
-                <Typography>{formatCurrency(summaryToShow.total)}</Typography>
+                <Typography fontWeight={800} fontSize={18}>{formatCurrency(summaryToShow.total)}</Typography>
             </Grid>
         </Grid>
     )
