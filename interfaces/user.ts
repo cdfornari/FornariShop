@@ -5,5 +5,5 @@ export interface iUser {
     password?: string;
     role: 'admin' | 'client';
     createdAt?: String;
-    updatedA?: String;
+    updatedAt?: String;
 }

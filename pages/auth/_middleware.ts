@@ -7,6 +7,7 @@ export async function middleware(req: NextRequest | any, ev: NextFetchEvent){
     if(session){
         const url = req.nextUrl.clone()
         url.pathname = req.nextUrl.searchParams.get('page') || '/';
+        url.searchParams.delete('page');
         return NextResponse.redirect(url);
     }
     return NextResponse.next();

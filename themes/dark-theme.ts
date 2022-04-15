@@ -102,6 +102,7 @@ export const darkTheme = createTheme({
       },
       styleOverrides: {
         root: {
+          backgroundColor: '#1E1E1E',
           boxShadow: '0px 5px 5px rgba(0,0,0,0.05)',
           borderRadius: '10px'
         }
