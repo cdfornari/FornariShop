@@ -1,4 +1,4 @@
-# Next JS Fornari Shop
+# Fornari Shop
 Before you run the app locally, you need to run the database:
 ```
 docker-compose up -d
