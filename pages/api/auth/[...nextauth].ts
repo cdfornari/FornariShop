@@ -24,10 +24,10 @@ export default NextAuth({
         return dbUsers.validateUser(credentials!.email, credentials!.password)
       }
     }),
-    GithubProvider({
+    /* GithubProvider({
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET,
-    }),
+    }), */
   ],
   pages: {
     signIn: '/auth/login',
