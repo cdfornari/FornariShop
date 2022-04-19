@@ -8,14 +8,22 @@ export const getAllProducts = async (): Promise<iProduct[]> => {
     .select('title images price inStock slug -_id')
     .lean();
     await db.disconnect();
-    return JSON.parse(JSON.stringify(products));
+    const imgProcessedProducts = products.map(product => {
+        product.images = product.images.map(image => image.includes('http') ? image : `${process.env.HOST_NAME}/products/${image}`);
+        return product;
+    });
+    return JSON.parse(JSON.stringify(imgProcessedProducts));
 };
 
 export const getProductBySlug = async (slug: string): Promise<iProduct | null> => {
     await db.connect();
     const product = await Product.findOne({slug}).lean();
     await db.disconnect();
+
     if(!product) return null;
+
+    product.images = product.images.map(image => image.includes('http') ? image : `${process.env.HOST_NAME}/products/${image}`);
+
     return JSON.parse(JSON.stringify(product));
 }
 
@@ -33,8 +41,13 @@ export const searchProducts = async (query: string): Promise<iProduct[]> => {
         $text: {
             $search: query
         }
-    }).select('title images price inStock slug -_id')
+    })
+    .select('title images price inStock slug -_id')
     .lean();
     await db.disconnect();
-    return products;
+    const imgProcessedProducts = products.map(product => {
+        product.images = product.images.map(image => image.includes('http') ? image : `${process.env.HOST_NAME}/products/${image}`);
+        return product;
+    });
+    return imgProcessedProducts;
 }

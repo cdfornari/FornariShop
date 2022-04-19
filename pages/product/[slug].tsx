@@ -15,7 +15,7 @@ interface Props {
 const ProductPage: NextPage<Props> = ({product}) => {
   const router = useRouter();
   const {addProductToCart} = useContext(CartContext);
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(product.inStock === 0 ? 0 : 1);
   const [size, setSize] = useState<iSize>();
   const addToCart = () => {
     if(!size) return;

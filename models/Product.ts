@@ -4,7 +4,8 @@ import { iProduct } from '../interfaces';
 const productSchema = new Schema({
     description: {
         type: String,
-        required: true
+        required: true,
+        default: ''
     },
     images: [{
         type: String

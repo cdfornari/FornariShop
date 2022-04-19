@@ -10,8 +10,8 @@ export interface iProduct {
     title: string;
     type: iType;
     gender: 'men'|'women'|'kid'|'unisex',
-    createdAt: string;
-    updatedAt: string;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 export type iSize = 'XS'|'S'|'M'|'L'|'XL'|'XXL'|'XXXL';

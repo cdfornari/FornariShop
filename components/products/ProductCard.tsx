@@ -11,7 +11,7 @@ export const ProductCard: FC<Props> = ({product}) => {
     const [isImgLoaded, setIsImgLoaded] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const productImage = useMemo(() => (
-        isHovered ? `/products/${product.images[1]}` : `/products/${product.images[0]}`
+        isHovered ? product.images[1] : product.images[0]
     ), [isHovered, product.images]);
     useEffect(() => {
         setTimeout(() => {

@@ -27,7 +27,7 @@ export const ProductSlideshow: FC<Props> = ({images}) => {
         {images.map((image) => (
             <SplideSlide key={image}>
                 <div style={{
-                    backgroundImage: `url(/products/${image})`,
+                    backgroundImage: `url(${image})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     display: 'flex',

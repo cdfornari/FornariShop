@@ -30,9 +30,11 @@ const updateUser = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     const { userId='', role='' } = req.body;
     if(!isValidObjectId(userId)) return res.status(400).json({ message: 'Invalid userId' });
     if(!['admin', 'client'].includes(role)) return res.status(400).json({ message: 'Invalid role' });
+    
     await db.connect();
     const user = await User.findByIdAndUpdate(userId, { role }, { new: true }).select('-password').lean();
     await db.disconnect();
+
     if(!user) return res.status(404).json({ message: 'User not found' });
     return res.status(200).json({ message: 'User updated' });
 }
