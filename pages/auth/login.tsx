@@ -27,9 +27,19 @@ const LoginPage = () => {
       })
     }, [])
     
-    const onLogin = async (formValues: FormData) => {
+    const onLogin = (formValues: FormData) => {
         setShowError(false);
-        await signIn('credentials',formValues);
+        signIn('credentials', {...formValues, redirect: false})
+        .then(({ok,error}: any) => {
+            if(ok){
+                const path = query.page?.toString() || '/';
+                replace(path);
+            }else{
+                console.log(error);
+                setShowError(true);
+                setTimeout(() => setShowError(false), 3000);
+            }
+        })
         /* const isValidLogin = await login(formValues.email, formValues.password);
         if(!isValidLogin) {
             setShowError(true);
