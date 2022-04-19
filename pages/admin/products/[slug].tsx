@@ -120,7 +120,6 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
                 <Box display='flex' justifyContent='end' sx={{ mb: 1 }}>
                     <Button 
                         variant='contained'
-                        className='circular-btn' 
                         color="secondary"
                         startIcon={ <SaveOutlined /> }
                         sx={{ width: '150px' }}
@@ -328,7 +327,6 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
                             <FormLabel sx={{ mb:1}}>Images</FormLabel>
                             <Button
                                 variant='contained'
-                                className='circular-btn' 
                                 color="secondary"
                                 fullWidth
                                 startIcon={ <UploadOutlined /> }

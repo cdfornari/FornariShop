@@ -90,8 +90,10 @@ export const lightTheme = createTheme({
           }
         },
         containedSecondary: {
+          borderRadius: '30px',
           ":hover": {
-            color: 'rgba(250,250,250,0.95)',
+            backgroundColor: '#274494',
+            color: 'rgba(250,250,250,0.95)'
           }
         }
       }

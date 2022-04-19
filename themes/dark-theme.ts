@@ -88,6 +88,12 @@ export const darkTheme = createTheme({
             transition: 'all 0.3s ease-in-out'
           },
         },
+        containedSecondary: {
+          borderRadius: '30px',
+          ":hover": {
+            backgroundColor: '#274494',
+          }
+        },
         text: {
           ":hover": {
             color: '#F21361'

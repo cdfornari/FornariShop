@@ -127,7 +127,7 @@ const RegisterPage = () => {
                         <Grid item xs={12} display='flex' justifyContent='end' flexDirection='column'>
                             <Divider sx={{width: '100%',mb: 2}}/>
                             {
-                                Object.values(providers).map((provider: any) => (
+                                Object.values(providers || {}).map((provider: any) => (
                                     (provider.id !== 'credentials') && 
                                     <Button
                                         key={provider.id}
