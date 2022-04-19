@@ -20,12 +20,12 @@ const LoginPage = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
     const [showError, setShowError] = useState(false);
 
-    /* const [providers, setProviders] = useState<any>({})
+    const [providers, setProviders] = useState<any>({})
     useEffect(() => {
       getProviders().then(providers => {
         setProviders(providers)
       })
-    }, []) */
+    }, []) 
     
     const onLogin = (formValues: FormData) => {
         setShowError(false);
@@ -116,7 +116,7 @@ const LoginPage = () => {
                                 </Link>
                             </NextLink>
                         </Grid>
-                        {/* <Grid item xs={12} display='flex' justifyContent='end' flexDirection='column'>
+                        <Grid item xs={12} display='flex' justifyContent='end' flexDirection='column'>
                             <Divider sx={{width: '100%',mb: 2}}/>
                             {
                                 Object.values(providers || {}).map((provider: any) => (
@@ -134,7 +134,7 @@ const LoginPage = () => {
                                     </Button>  
                                 )) 
                             }
-                        </Grid> */}
+                        </Grid> 
                     </Grid>
                 </Box>
             </form>
