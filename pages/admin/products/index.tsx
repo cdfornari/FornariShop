@@ -6,11 +6,13 @@ import { AddOutlined, CategoryOutlined } from '@mui/icons-material';
 import { DashboardLayout } from '../../../components/layouts'
 import { FullScreenLoading } from '../../../components/ui';
 import { iProduct } from '../../../interfaces';
+import { api } from '../../../api';
 
 const columns: GridColDef[] = [
     { 
         field: 'img', 
         headerName: 'Image',
+        sortable: false,
         renderCell: ({row}: GridValueGetterParams) => (
             <a href={`/product/${row.slug}`} target='_blank' rel='noreferrer'>
                 <CardMedia 
@@ -30,12 +32,34 @@ const columns: GridColDef[] = [
     {
         field: 'edit',
         headerName: 'Edit',
+        sortable: false,
         renderCell: ({row}: GridValueGetterParams) => (
             <NextLink href={`/admin/products/${row.slug}`} passHref>
                 <Link underline='always'>
                     Edit
                 </Link>
             </NextLink>
+        )
+    },
+    {
+        field: 'delete',
+        headerName: 'Delete',
+        sortable: false,
+        renderCell: ({row}: GridValueGetterParams) => (
+            <Button
+                variant='text'
+                color='error'
+                onClick={async() => {
+                    await api({
+                        url: '/admin/products',
+                        method: 'DELETE',
+                        data: {id: row.id}
+                    })
+                    window.location.reload();
+                }}
+            >
+                Delete
+            </Button>
         )
     }
 ]

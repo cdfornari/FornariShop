@@ -17,7 +17,7 @@ type FormData = {
 const LoginPage = () => {
     //const {login} = useContext(AuthContext);
     const {replace,query} = useRouter();
-    const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
+    const { register, handleSubmit, formState: { errors }, setValue } = useForm<FormData>();
     const [showError, setShowError] = useState(false);
 
     const [providers, setProviders] = useState<any>({})
@@ -35,6 +35,7 @@ const LoginPage = () => {
                 const path = query.page?.toString() || '/';
                 replace(path);
             }else{
+                setValue('password', '');
                 console.log(error);
                 setShowError(true);
                 setTimeout(() => setShowError(false), 3000);
@@ -123,6 +124,7 @@ const LoginPage = () => {
                                     (provider.id !== 'credentials') && 
                                     <Button
                                         key={provider.id}
+                                        className='fadeIn'
                                         variant='outlined'
                                         fullWidth
                                         color='primary'

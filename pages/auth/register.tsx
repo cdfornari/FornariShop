@@ -131,6 +131,7 @@ const RegisterPage = () => {
                                     (provider.id !== 'credentials') && 
                                     <Button
                                         key={provider.id}
+                                        className='fadeIn'
                                         variant='outlined'
                                         fullWidth
                                         color='primary'

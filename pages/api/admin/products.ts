@@ -20,6 +20,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
             return createProduct(req,res);
         case 'PUT':
             return updateProduct(req,res);
+        case 'DELETE':
+            return deleteProduct(req,res);
         default:
             res.status(405).json({ message: 'Method not allowed' })
     }
@@ -86,5 +88,22 @@ const updateProduct = async (req: NextApiRequest, res: NextApiResponse<Data>) =>
         console.log(error)
         await db.disconnect();
         return res.status(400).json({ message: 'Error updating product' })
+    }
+}
+
+const deleteProduct = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
+    const { id = '' } = req.body as { id: string };
+    if(!isValidObjectId(id)) return res.status(400).json({ message: 'Invalid product id' });
+    const product = await Product.findById(id);
+    if(!product) return res.status(400).json({ message: 'Product not found' });
+    try {
+        await db.connect();
+        await product.remove();
+        await db.disconnect();
+        return res.status(200).json({ message: 'Product deleted' });
+    } catch (error) {
+        console.log(error)
+        await db.disconnect();
+        return res.status(400).json({ message: 'Error deleting product' })
     }
 }

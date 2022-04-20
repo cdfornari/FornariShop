@@ -401,7 +401,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
             price: 0,
             type: '' as iType,
             gender: '' as "men" | "women" | "kid" | "unisex",
-            images: ['1','2'],
+            images: [],
             sizes: [],
             inStock: 0,
             slug: '',
