@@ -3,6 +3,7 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { AppBar, Badge, Box, Button, IconButton, Input, InputAdornment, Link, Toolbar, Typography } from '@mui/material'
 import { Close, SearchSharp, ShoppingCartSharp } from '@mui/icons-material';
+import Cookies from 'js-cookie';
 import { CartContext, UIContext } from '../../context';
 import { ThemeSwitcher } from './';
 
@@ -15,6 +16,12 @@ export const Navbar = () => {
   const [searchQuery,setSearchQuery] = useState('');
   const onSearch = () => {
     if(searchQuery.trim().length === 0) return;
+    setSearchQuery('');
+    setIsSearchVisible(false);  
+    const recentSearches = JSON.parse(Cookies.get('recentSearches') || '[]');
+    if(!recentSearches.includes(searchQuery)) recentSearches.push(searchQuery);
+    if(recentSearches.length > 5) recentSearches.shift();
+    Cookies.set('recentSearches', JSON.stringify(recentSearches),{expires: 7});
     push(`/search/${searchQuery}`);
   }
   return (

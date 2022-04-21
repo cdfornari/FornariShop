@@ -42,9 +42,57 @@ export const searchProducts = async (query: string): Promise<iProduct[]> => {
             $search: query
         }
     })
-    .select('title images price inStock slug -_id')
+    .select('title images price tags inStock slug -_id')
     .lean();
     await db.disconnect();
+    const imgProcessedProducts = products.map(product => {
+        product.images = product.images.map(image => image.includes('http') ? image : `${process.env.HOST_NAME}/products/${image}`);
+        return product;
+    });
+    return imgProcessedProducts;
+}
+
+export const getSuggestedProducts = async (productsInCart: iProduct[], recentSearches: string[]): Promise<iProduct[]> => {
+    const tags: string[] = [];
+    for(const product of productsInCart) {
+        for(const tag of product.tags) {
+            if(!tags.includes(tag)) tags.push(tag);
+        }
+    }
+    for(const search of recentSearches){
+        if(!tags.includes(search)) tags.push(search);
+        const productSearched = await searchProducts(search);
+        for(const product of productSearched){
+            if(!tags.includes(product.title)) tags.push(product.title);
+            for(const tag of product.tags){
+                if(!tags.includes(tag)) tags.push(tag);
+            }
+        }
+    }
+    const products: iProduct[] = [];
+
+    await db.connect();
+    for(const tag of tags){
+        const suggestedProducts = await Product.find({
+            $text: {
+                $search: tag
+            }
+        })
+        .select('title images price inStock slug -_id')
+        .lean();
+
+        for(const suggestedProduct of suggestedProducts){
+            let productInArray = false;
+            for(const product of products){
+                if(product.slug === suggestedProduct.slug) productInArray = true;
+            }
+            if(!productInArray) products.push(suggestedProduct);
+        }
+    }
+    await db.disconnect();
+
+    if(products.length === 0) return [];
+
     const imgProcessedProducts = products.map(product => {
         product.images = product.images.map(image => image.includes('http') ? image : `${process.env.HOST_NAME}/products/${image}`);
         return product;

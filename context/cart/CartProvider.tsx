@@ -45,9 +45,7 @@ export const CartProvider: FC = ({children}) => {
         if(initialRender.current) {
             initialRender.current = false;
         } else {
-            //Cookies.remove('cart');
-            //cookies ignoring it after 4th product
-            //Cookies.set('cart', JSON.stringify(state.cart),{expires: 7});
+            Cookies.set('cart', JSON.stringify(state.cart),{expires: 7});
             localStorage.setItem('cart', JSON.stringify(state.cart));
         }
     },[state.cart])

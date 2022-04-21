@@ -4,6 +4,7 @@ import { Box, Divider, Drawer, IconButton, Input, InputAdornment, List, ListItem
 import { AccountCircleOutlined, AdminPanelSettings, CategoryOutlined, ConfirmationNumberOutlined, DashboardOutlined, EscalatorWarningOutlined, FemaleOutlined, LoginOutlined, MaleOutlined, SearchOutlined, VpnKeyOutlined } from "@mui/icons-material"
 import { AuthContext, UIContext } from '../../context'
 import { ThemeSwitcher } from './ThemeSwitcher';
+import Cookies from 'js-cookie';
 
 
 export const SideMenu = () => {
@@ -17,6 +18,11 @@ export const SideMenu = () => {
     }
     const onSearch = () => {
         if(searchQuery.trim().length === 0) return;
+        setSearchQuery('');
+        const recentSearches = JSON.parse(Cookies.get('recentSearches') || '[]');
+        if(!recentSearches.includes(searchQuery)) recentSearches.push(searchQuery);
+        if(recentSearches.length > 5) recentSearches.shift();
+        Cookies.set('recentSearches', JSON.stringify(recentSearches),{expires: 7});
         navigateTo(`/search/${searchQuery}`);
     }
     return (

@@ -40,9 +40,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
     let products = await dbProducts.searchProducts(query);
     const foundProducts = products.length > 0;
-    //TODO: suggested products
     if(products.length === 0){
-        products = await dbProducts.getAllProducts();
+        const {cookies} = ctx.req;
+        products = await dbProducts.getSuggestedProducts(JSON.parse(cookies.cart || '[]'), JSON.parse(cookies.recentSearches || '[]'));
+        if(products.length === 0) products = await dbProducts.getAllProducts();
     }
     return {
         props: {
