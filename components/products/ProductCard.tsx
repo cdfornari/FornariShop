@@ -21,7 +21,7 @@ export const ProductCard: FC<Props> = ({product}) => {
     }, []);
     return (
         <Grid item 
-            xs={6} 
+            xs={12} 
             sm={4}
         >
             <div    
